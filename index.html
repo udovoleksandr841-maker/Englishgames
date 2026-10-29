@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c1426">
+  <meta name="description" content="Practice English words and phrases with unlimited translation questions across five difficulty levels.">
+  <title>Word Journey — English Practice</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-text-size-adjust: 100%;
+      --background: #0c1426;
+      --panel: #17243c;
+      --muted: #a9bbd2;
+      --mint: #62e1b4;
+      --blue: #66bef5;
+      --gold: #f8ca68;
+      --purple: #b193ff;
+      --coral: #ff897e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 280px;
+      min-height: 100vh;
+      margin: 0;
+      padding:
+        max(18px, env(safe-area-inset-top))
+        max(18px, env(safe-area-inset-right))
+        max(28px, env(safe-area-inset-bottom))
+        max(18px, env(safe-area-inset-left));
+      background:
+        radial-gradient(ellipse at 50% -18%, #203957 0, transparent 56%),
+        var(--background);
+      color: #f8faff;
+    }
+
+    button, input { font: inherit; }
+
+    button {
+      min-height: 52px;
+      border: 0;
+      border-radius: 15px;
+      color: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 3px;
+    }
+
+    button:disabled { cursor: default; }
+    [hidden] { display: none !important; }
+
+    .app { width: min(100%, 820px); margin: 0 auto; }
+
+    .brand {
+      margin: 6px 0 30px;
+      color: var(--blue);
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-align: center;
+    }
+
+    .screen { display: grid; gap: 20px; }
+    .screen[hidden] { display: none; }
+
+    .home { padding-top: clamp(16px, 8vh, 80px); }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--mint);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-align: center;
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 0;
+      font-size: clamp(2.6rem, 8vw, 4.5rem);
+      line-height: 1.05;
+      text-align: center;
+    }
+
+    h2 { margin-bottom: 0; font-size: clamp(1.25rem, 4vw, 1.6rem); }
+
+    .intro, .helper, .note {
+      margin-bottom: 0;
+      color: var(--muted);
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .intro { max-width: 580px; margin-inline: auto; font-size: 1.08rem; }
+
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .level-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 92px;
+      width: 100%;
+      padding: 16px;
+      border: 1px solid color-mix(in srgb, var(--tint) 32%, #315078);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--tint) 9%, var(--panel)), var(--panel));
+      text-align: left;
+    }
+
+    .level-card:hover { border-color: var(--tint); filter: brightness(1.1); }
+
+    .level-icon {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      flex: 0 0 48px;
+      place-items: center;
+      border-radius: 15px;
+      background: color-mix(in srgb, var(--tint) 15%, transparent);
+      color: var(--tint);
+      font-size: 1.3rem;
+    }
+
+    .level-copy { display: grid; gap: 4px; min-width: 0; }
+    .level-copy strong { font-size: 1rem; }
+    .level-copy span { color: var(--muted); font-size: .86rem; line-height: 1.35; }
+
+    .level-card.beginner { --tint: var(--mint); }
+    .level-card.elementary { --tint: var(--blue); }
+    .level-card.intermediate { --tint: var(--gold); }
+    .level-card.advanced { --tint: var(--purple); }
+    .level-card.fluent { --tint: var(--coral); grid-column: 1 / -1; }
+
+    .info-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 2px;
+    }
+
+    .info-pill {
+      padding: 8px 12px;
+      border: 1px solid #2e4564;
+      border-radius: 999px;
+      background: #101c31;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 650;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar h2 { grid-column: 2; text-align: center; }
+
+    .back-button {
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: start;
+      min-height: 44px;
+      padding: 8px 10px;
+      background: transparent;
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .reset-button {
+      grid-column: 3;
+      grid-row: 1;
+      justify-self: end;
+      min-height: 40px;
+      padding: 8px 10px;
+      background: transparent;
+      color: var(--coral);
+      font-size: .86rem;
+      font-weight: 700;
+    }
+
+    .level-badge {
+      justify-self: center;
+      padding: 7px 12px;
+      border: 1px solid color-mix(in srgb, var(--tint) 45%, transparent);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--tint) 11%, transparent);
+      color: var(--tint);
+      font-size: .77rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    .level-badge.beginner { --tint: var(--mint); }
+    .level-badge.elementary { --tint: var(--blue); }
+    .level-badge.intermediate { --tint: var(--gold); }
+    .level-badge.advanced { --tint: var(--purple); }
+    .level-badge.fluent { --tint: var(--coral); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .stat {
+      display: grid;
+      min-height: 74px;
+      align-content: center;
+      gap: 5px;
+      border: 1px solid #273c5c;
+      border-radius: 16px;
+      background: #101c31;
+      text-align: center;
+    }
+
+    .stat-label { color: var(--muted); font-size: .67rem; font-weight: 800; letter-spacing: .09em; }
+    .stat-value { color: var(--stat-color, #fff); font-size: 1.25rem; font-weight: 800; }
+    .stat:nth-child(1) { --stat-color: var(--blue); }
+    .stat:nth-child(2) { --stat-color: var(--mint); }
+    .stat:nth-child(3) { --stat-color: var(--gold); }
+
+    .quiz-card {
+      display: grid;
+      gap: 20px;
+      padding: clamp(20px, 5vw, 34px);
+      border: 1px solid #2b4568;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #1a2b47, var(--panel));
+      box-shadow: 0 22px 65px #02081344;
+    }
+
+    .prompt-label {
+      margin: 0;
+      color: var(--tint, var(--mint));
+      font-size: .76rem;
+      font-weight: 850;
+      letter-spacing: .15em;
+    }
+
+    .prompt {
+      margin: 0;
+      font-size: clamp(1.8rem, 6vw, 2.8rem);
+      font-weight: 760;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .answer-form { display: grid; gap: 12px; }
+
+    .answer-input {
+      width: 100%;
+      min-height: 58px;
+      padding: 15px 17px;
+      border: 1px solid #426084;
+      border-radius: 15px;
+      background: #0c1729;
+      color: #f8faff;
+      font-size: 1rem;
+    }
+
+    .answer-input::placeholder { color: #7f95b1; }
+    .answer-input:disabled { color: #c4d2e3; opacity: 1; }
+
+    .primary-button, .next-button {
+      width: 100%;
+      padding: 12px 18px;
+      background: var(--tint, var(--mint));
+      color: #10182a;
+      font-weight: 850;
+    }
+
+    .primary-button:disabled { opacity: .5; }
+
+    .next-button { background: #245b81; color: white; }
+
+    .feedback {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border: 1px solid color-mix(in srgb, var(--feedback-color) 45%, transparent);
+      border-radius: 16px;
+      background: color-mix(in srgb, var(--feedback-color) 14%, #101c31);
+      line-height: 1.6;
+    }
+
+    .feedback.correct { --feedback-color: var(--mint); }
+    .feedback.incorrect { --feedback-color: var(--coral); }
+    .feedback-title { margin: 0; color: var(--feedback-color); font-weight: 850; }
+    .feedback-answer { margin: 0; font-weight: 750; }
+    .feedback-explanation { margin: 0; color: var(--muted); }
+    .feedback-your-answer { margin: 0; color: var(--muted); overflow-wrap: anywhere; }
+    .helper { font-size: .9rem; }
+
+    @media (max-width: 560px) {
+      .brand { margin-bottom: 22px; }
+      .home { padding-top: 3vh; }
+      .level-grid { grid-template-columns: 1fr; }
+      .level-card.fluent { grid-column: auto; }
+      .topbar h2 { font-size: .98rem; }
+      .reset-button { font-size: .78rem; padding-inline: 5px; }
+      .quiz-card { gap: 17px; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      button { transition: transform 120ms ease, filter 120ms ease; }
+      button:active:not(:disabled) { transform: scale(.985); filter: brightness(1.12); }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <p class="brand">✦ WORD JOURNEY · ENGLISH PRACTICE ✦</p>
+
+    <section class="screen home" id="home-screen">
+      <p class="eyebrow">LEARN A LITTLE EVERY DAY</p>
+      <h1>Word Journey</h1>
+      <p class="intro">Translate Ukrainian words and phrases into English. Choose a level, type your answer, and learn from instant feedback.</p>
+
+      <div class="level-grid" aria-label="Choose a difficulty level">
+        <button class="level-card beginner" type="button" data-level="beginner">
+          <span class="level-icon" aria-hidden="true">✦</span>
+          <span class="level-copy"><strong>1. Beginner</strong><span>First words and useful phrases</span></span>
+        </button>
+        <button class="level-card elementary" type="button" data-level="elementary">
+          <span class="level-icon" aria-hidden="true">◉</span>
+          <span class="level-copy"><strong>2. Elementary</strong><span>Everyday questions and sentences</span></span>
+        </button>
+        <button class="level-card intermediate" type="button" data-level="intermediate">
+          <span class="level-icon" aria-hidden="true">▤</span>
+          <span class="level-copy"><strong>3. Intermediate</strong><span>Natural conversation and grammar</span></span>
+        </button>
+        <button class="level-card advanced" type="button" data-level="advanced">
+          <span class="level-icon" aria-hidden="true">✧</span>
+          <span class="level-copy"><strong>4. Advanced</strong><span>Nuance and complex grammar</span></span>
+        </button>
+        <button class="level-card fluent" type="button" data-level="fluent">
+          <span class="level-icon" aria-hidden="true">♛</span>
+          <span class="level-copy"><strong>5. Fluent</strong><span>Idioms and confident expression</span></span>
+        </button>
+      </div>
+
+      <div class="info-row" aria-label="Game features">
+        <span class="info-pill">⌨ Type your translation</span>
+        <span class="info-pill">∞ Unlimited questions</span>
+        <span class="info-pill">✦ Learn from every answer</span>
+      </div>
+      <p class="note">Works on phones, tablets, and computers. No account or installation needed.</p>
+    </section>
+
+    <section class="screen" id="quiz-screen" hidden>
+      <header class="topbar">
+        <button class="back-button" id="back-button" type="button">‹ Levels</button>
+        <h2>TRANSLATE</h2>
+        <button class="reset-button" id="reset-button" type="button">↻ Start over</button>
+      </header>
+
+      <div class="level-badge" id="level-badge"></div>
+      <div class="stats" aria-label="Practice statistics">
+        <div class="stat"><span class="stat-label">QUESTION</span><span class="stat-value" id="question-count">1</span></div>
+        <div class="stat"><span class="stat-label">CORRECT</span><span class="stat-value" id="correct-count">0</span></div>
+        <div class="stat"><span class="stat-label">STREAK</span><span class="stat-value" id="streak-count">0</span></div>
+      </div>
+
+      <article class="quiz-card">
+        <p class="prompt-label">TRANSLATE TO ENGLISH</p>
+        <h1 class="prompt" id="prompt" lang="uk"></h1>
+        <form class="answer-form" id="answer-form">
+          <label class="sr-only" for="answer-input">Your English translation</label>
+          <input class="answer-input" id="answer-input" name="answer" type="text" autocomplete="off" autocapitalize="sentences" placeholder="Write your translation…" required>
+          <button class="primary-button" id="check-button" type="submit">Check answer&nbsp; →</button>
+        </form>
+        <p class="helper" id="helper">Take your time. You can press Enter or tap Check answer.</p>
+        <div class="feedback" id="feedback" aria-live="polite" hidden>
+          <p class="feedback-title" id="feedback-title"></p>
+          <p class="feedback-your-answer" id="feedback-your-answer" hidden></p>
+          <p class="feedback-answer" id="feedback-answer"></p>
+          <p class="feedback-explanation" id="feedback-explanation"></p>
+        </div>
+        <button class="next-button" id="next-button" type="button" hidden>Next question&nbsp; →</button>
+      </article>
+      <p class="note">Questions repeat in a new order after you have tried them all.</p>
+    </section>
+  </main>
+
+  <script>
+    "use strict";
+
+    const levels = {
+      beginner: { number: 1, title: "Beginner", tint: "#62e1b4" },
+      elementary: { number: 2, title: "Elementary", tint: "#66bef5" },
+      intermediate: { number: 3, title: "Intermediate", tint: "#f8ca68" },
+      advanced: { number: 4, title: "Advanced", tint: "#b193ff" },
+      fluent: { number: 5, title: "Fluent", tint: "#ff897e" }
+    };
+
+    const questions = [
+      { level: "beginner", prompt: "Привіт!", answer: "Hello", alternatives: ["Hi"], explanation: "“Hello” is a friendly greeting. “Hi” is a more casual version." },
+      { level: "beginner", prompt: "Доброго ранку.", answer: "Good morning", alternatives: [], explanation: "Use “Good morning” to greet someone before midday." },
+      { level: "beginner", prompt: "Дякую.", answer: "Thank you", alternatives: ["Thanks"], explanation: "“Thank you” is polite; “thanks” is a common, more casual alternative." },
+      { level: "beginner", prompt: "Будь ласка. (ввічливе прохання)", answer: "Please", alternatives: [], explanation: "Add “please” to make a request sound polite: “Water, please.”" },
+      { level: "beginner", prompt: "вода", answer: "water", alternatives: [], explanation: "“Water” is usually uncountable. Say “some water,” not “a water,” when asking for a drink." },
+      { level: "beginner", prompt: "друг", answer: "friend", alternatives: [], explanation: "A “friend” is someone you know well and like." },
+      { level: "beginner", prompt: "Де туалет?", answer: "Where is the bathroom?", alternatives: ["Where is the restroom?"], explanation: "“Where is…?” is a useful way to ask where something is. “Restroom” is another polite word for a public bathroom." },
+      { level: "beginner", prompt: "Я люблю музику.", answer: "I like music.", alternatives: ["I love music."], explanation: "Use “I like…” to talk about something you enjoy. “I love…” expresses a stronger feeling." },
+      { level: "beginner", prompt: "На добраніч.", answer: "Good night", alternatives: [], explanation: "Say “Good night” when someone is going to bed or when you are leaving late in the evening." },
+      { level: "beginner", prompt: "Будь ласка. (відповідь на «дякую»)", answer: "You are welcome", alternatives: ["You’re welcome"], explanation: "“You are welcome” is a polite response to “Thank you.”" },
+
+      { level: "elementary", prompt: "Я не розумію.", answer: "I do not understand.", alternatives: ["I don't understand."], explanation: "“Do not” makes a present-tense statement negative. In conversation it is often shortened to “don’t.”" },
+      { level: "elementary", prompt: "Де залізничний вокзал?", answer: "Where is the train station?", alternatives: ["Where is the railway station?"], explanation: "Use “Where is…?” to ask for a location. “Train station” and “railway station” mean the same thing." },
+      { level: "elementary", prompt: "Мені потрібна допомога.", answer: "I need help.", alternatives: ["I need some help."], explanation: "“Need” means something is necessary. “Help” is usually uncountable, so it does not need “a.”" },
+      { level: "elementary", prompt: "Скільки це коштує?", answer: "How much does this cost?", alternatives: ["How much is this?"], explanation: "Both “How much does this cost?” and “How much is this?” are natural ways to ask about a price." },
+      { level: "elementary", prompt: "Можна мені каву, будь ласка?", answer: "Can I have a coffee, please?", alternatives: ["Could I have a coffee, please?"], explanation: "“Can I have…?” is a common way to order. “Could I have…?” sounds a little more polite." },
+      { level: "elementary", prompt: "Вона моя сестра.", answer: "She is my sister.", alternatives: ["She's my sister."], explanation: "Use “she” for one female person. “She is” can be shortened to “she’s.”" },
+      { level: "elementary", prompt: "Ми готові.", answer: "We are ready.", alternatives: ["We're ready."], explanation: "“We are” describes a state. The contraction “we’re” has the same meaning." },
+      { level: "elementary", prompt: "До зустрічі завтра.", answer: "See you tomorrow.", alternatives: [], explanation: "“See you” is a friendly way to say goodbye when you expect to meet again." },
+      { level: "elementary", prompt: "Сьогодні холодно.", answer: "It is cold today.", alternatives: ["It's cold today."], explanation: "English uses “it” when talking about the weather: “It is cold,” “It is sunny.”" },
+      { level: "elementary", prompt: "Я живу поруч.", answer: "I live nearby.", alternatives: ["I live near here."], explanation: "“Nearby” means not far away. It is often used without naming a place after it." },
+
+      { level: "intermediate", prompt: "Я вже поїв / поїла.", answer: "I have already eaten.", alternatives: ["I've already eaten."], explanation: "The present perfect (“have eaten”) connects a past action to now. “Already” emphasizes that it happened sooner than expected." },
+      { level: "intermediate", prompt: "Не могли б ви говорити повільніше?", answer: "Could you speak more slowly?", alternatives: ["Could you speak slower?"], explanation: "“Could you…?” makes a request polite. “More slowly” describes how someone speaks." },
+      { level: "intermediate", prompt: "Я шукаю свої ключі.", answer: "I am looking for my keys.", alternatives: ["I'm looking for my keys."], explanation: "Use “look for” when trying to find something. The present continuous describes what is happening now." },
+      { level: "intermediate", prompt: "Чим ви заробляєте на життя?", answer: "What do you do for a living?", alternatives: ["What is your job?"], explanation: "“What do you do for a living?” is a natural way to ask about someone’s job." },
+      { level: "intermediate", prompt: "Це залежить від погоди.", answer: "It depends on the weather.", alternatives: [], explanation: "The phrase is “depend on.” In the present simple, use “depends” with “it.”" },
+      { level: "intermediate", prompt: "Я вже бував / бувала тут раніше.", answer: "I have been here before.", alternatives: ["I've been here before."], explanation: "“Have been” is the present perfect of “be.” “Before” means at an earlier time." },
+      { level: "intermediate", prompt: "Я запізнився / запізнилася на автобус.", answer: "I missed the bus.", alternatives: [], explanation: "“Missed the bus” means the bus left before you could get on it." },
+      { level: "intermediate", prompt: "Ви не проти відчинити вікно?", answer: "Would you mind opening the window?", alternatives: [], explanation: "“Would you mind…?” is a polite request. Follow it with a verb ending in “-ing.”" },
+      { level: "intermediate", prompt: "Я звик / звикла рано вставати.", answer: "I am used to getting up early.", alternatives: ["I'm used to getting up early."], explanation: "“Be used to” means something feels normal or familiar. It is followed by a noun or an “-ing” verb." },
+      { level: "intermediate", prompt: "Поспіху немає.", answer: "There is no hurry.", alternatives: ["There is no rush."], explanation: "“There is no hurry” and “there is no rush” both mean that something does not need to happen quickly." },
+
+      { level: "advanced", prompt: "Якби я знав / знала, я б зателефонував / зателефонувала.", answer: "If I had known, I would have called.", alternatives: [], explanation: "This third conditional describes an unreal past: “if” + past perfect, then “would have” + past participle." },
+      { level: "advanced", prompt: "Попри дощ, ми продовжили грати.", answer: "Despite the rain, we continued playing.", alternatives: ["In spite of the rain, we continued playing."], explanation: "“Despite” and “in spite of” are followed by a noun or an “-ing” form, not a full clause." },
+      { level: "advanced", prompt: "Шкода, що я не можу залишитися довше.", answer: "I wish I could stay longer.", alternatives: [], explanation: "“I wish I could…” expresses a desire for something that is not possible now." },
+      { level: "advanced", prompt: "Вони працюють над цим проєктом із січня.", answer: "They have been working on this project since January.", alternatives: [], explanation: "The present perfect continuous (“have been working”) describes an action that started in the past and continues now. Use “since” with a starting point." },
+      { level: "advanced", prompt: "Щойно я вийшов / вийшла, як почався дощ.", answer: "No sooner had I left than it started to rain.", alternatives: [], explanation: "The formal pattern “No sooner had… than…” uses inversion: “had” comes before the subject." },
+      { level: "advanced", prompt: "Якщо не буде заторів, ми приїдемо вчасно.", answer: "Unless there is traffic, we will arrive on time.", alternatives: ["If there is no traffic, we will arrive on time."], explanation: "“Unless” means “if not.” Use the present simple after it, even when talking about the future." },
+      { level: "advanced", prompt: "Ймовірно, вона вже закінчила.", answer: "She is likely to have finished already.", alternatives: ["She has probably finished already."], explanation: "“Be likely to have done” expresses a strong possibility about a completed action." },
+      { level: "advanced", prompt: "Тобі слід було сказати мені раніше.", answer: "You should have told me earlier.", alternatives: [], explanation: "“Should have” + a past participle expresses advice or regret about something in the past." },
+      { level: "advanced", prompt: "У мене закінчився час.", answer: "I ran out of time.", alternatives: [], explanation: "“Run out of” means to use all of something so that none is left." },
+      { level: "advanced", prompt: "До того часу, як ми приїхали, фільм уже почався.", answer: "By the time we arrived, the film had already started.", alternatives: ["By the time we arrived, the movie had already started."], explanation: "Use the past perfect (“had started”) for the earlier of two past events." },
+
+      { level: "fluent", prompt: "На сьогодні досить, завершімо роботу.", answer: "Let us call it a day.", alternatives: ["Let's call it a day."], explanation: "“Call it a day” is an idiom meaning to stop working for now." },
+      { level: "fluent", prompt: "Я трохи нездужаю.", answer: "I am feeling under the weather.", alternatives: ["I'm feeling under the weather.", "I feel under the weather."], explanation: "“Under the weather” is an informal idiom meaning that you feel slightly ill." },
+      { level: "fluent", prompt: "Давайте розпочнемо.", answer: "Let us get the ball rolling.", alternatives: ["Let's get the ball rolling."], explanation: "“Get the ball rolling” means to start an activity or process." },
+      { level: "fluent", prompt: "Це зовсім вилетіло в мене з голови.", answer: "It completely slipped my mind.", alternatives: ["It slipped my mind."], explanation: "“Slip someone’s mind” means to be forgotten, usually unintentionally." },
+      { level: "fluent", prompt: "Ми однаково розуміємо ситуацію.", answer: "We are on the same page.", alternatives: ["We're on the same page."], explanation: "“Be on the same page” means to have the same understanding or agree about something." },
+      { level: "fluent", prompt: "Я не можу дозволити собі втратити цю можливість.", answer: "I cannot afford to miss this opportunity.", alternatives: ["I can't afford to miss this opportunity."], explanation: "“Cannot afford to” means that something is too important or risky to do without." },
+      { level: "fluent", prompt: "Чим раніше ми почнемо, тим краще.", answer: "The sooner we start, the better.", alternatives: [], explanation: "This comparative pattern (“the sooner…, the better”) shows that one change makes another result better." },
+      { level: "fluent", prompt: "З нетерпінням чекаю на вашу відповідь.", answer: "I look forward to hearing from you.", alternatives: [], explanation: "In “look forward to,” the word “to” is a preposition, so it is followed by a noun or an “-ing” verb." },
+      { level: "fluent", prompt: "Якби ж я знав / знала про це раніше!", answer: "If only I had known about it earlier!", alternatives: ["Had I known about it earlier!"], explanation: "“If only” expresses a strong wish or regret. For a past regret, use the past perfect." },
+      { level: "fluent", prompt: "Це виявилося прихованим благом.", answer: "It turned out to be a blessing in disguise.", alternatives: [], explanation: "“A blessing in disguise” is something that seems bad at first but later brings a good result." }
+    ];
+
+    const state = {
+      level: null,
+      question: null,
+      deck: [],
+      previousQuestion: null,
+      questionsAnswered: 0,
+      correctAnswers: 0,
+      streak: 0,
+      answered: false
+    };
+
+    const homeScreen = document.querySelector("#home-screen");
+    const quizScreen = document.querySelector("#quiz-screen");
+    const badge = document.querySelector("#level-badge");
+    const prompt = document.querySelector("#prompt");
+    const answerForm = document.querySelector("#answer-form");
+    const answerInput = document.querySelector("#answer-input");
+    const checkButton = document.querySelector("#check-button");
+    const feedback = document.querySelector("#feedback");
+    const nextButton = document.querySelector("#next-button");
+
+    function normalize(text) {
+      return text
+        .replace(/[’‘`]/g, "'")
+        .replace(/'/g, "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim()
+        .replace(/\s+/g, " ");
+    }
+
+    function shuffled(items) {
+      const result = [...items];
+      for (let index = result.length - 1; index > 0; index -= 1) {
+        const other = Math.floor(Math.random() * (index + 1));
+        [result[index], result[other]] = [result[other], result[index]];
+      }
+      return result;
+    }
+
+    function nextQuestion() {
+      if (state.deck.length === 0) {
+        state.deck = shuffled(questions.filter((item) => item.level === state.level));
+        if (state.deck.length > 1 && state.deck[state.deck.length - 1] === state.previousQuestion) {
+          [state.deck[0], state.deck[state.deck.length - 1]] = [state.deck[state.deck.length - 1], state.deck[0]];
+        }
+      }
+      state.question = state.deck.pop();
+      state.previousQuestion = state.question;
+      state.answered = false;
+      prompt.textContent = state.question.prompt;
+      answerInput.value = "";
+      answerInput.disabled = false;
+      checkButton.hidden = false;
+      checkButton.disabled = true;
+      feedback.hidden = true;
+      nextButton.hidden = true;
+      document.querySelector("#helper").hidden = false;
+      updateStats();
+      answerInput.focus({ preventScroll: true });
+    }
+
+    function updateStats() {
+      const currentQuestionNumber = state.questionsAnswered + (state.answered ? 0 : 1);
+      document.querySelector("#question-count").textContent = String(currentQuestionNumber);
+      document.querySelector("#correct-count").textContent = String(state.correctAnswers);
+      document.querySelector("#streak-count").textContent = String(state.streak);
+    }
+
+    function startLevel(level) {
+      state.level = level;
+      state.deck = [];
+      state.previousQuestion = null;
+      state.questionsAnswered = 0;
+      state.correctAnswers = 0;
+      state.streak = 0;
+      badge.textContent = `LEVEL ${levels[level].number} · ${levels[level].title.toUpperCase()}`;
+      badge.className = `level-badge ${level}`;
+      document.documentElement.style.setProperty("--tint", levels[level].tint);
+      homeScreen.hidden = true;
+      quizScreen.hidden = false;
+      nextQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function submitAnswer(event) {
+      event.preventDefault();
+      if (state.answered || !answerInput.value.trim()) return;
+
+      const submitted = answerInput.value.trim();
+      const accepted = [state.question.answer, ...state.question.alternatives];
+      const isCorrect = accepted.some((answer) => normalize(answer) === normalize(submitted));
+      state.answered = true;
+      state.questionsAnswered += 1;
+      state.correctAnswers += Number(isCorrect);
+      state.streak = isCorrect ? state.streak + 1 : 0;
+
+      answerInput.disabled = true;
+      checkButton.hidden = true;
+      document.querySelector("#helper").hidden = true;
+      document.querySelector("#feedback-title").textContent = isCorrect ? "✓ Correct!" : "✦ Not quite";
+      document.querySelector("#feedback-answer").textContent = `A good translation: ${state.question.answer}`;
+      document.querySelector("#feedback-explanation").textContent = state.question.explanation;
+
+      const yourAnswer = document.querySelector("#feedback-your-answer");
+      yourAnswer.hidden = isCorrect;
+      yourAnswer.textContent = `Your answer: ${submitted}`;
+      feedback.className = `feedback ${isCorrect ? "correct" : "incorrect"}`;
+      feedback.hidden = false;
+      nextButton.hidden = false;
+      updateStats();
+      nextButton.focus({ preventScroll: true });
+    }
+
+    document.querySelectorAll("[data-level]").forEach((button) => {
+      button.addEventListener("click", () => startLevel(button.dataset.level));
+    });
+
+    answerInput.addEventListener("input", () => {
+      checkButton.disabled = !answerInput.value.trim();
+    });
+
+    answerForm.addEventListener("submit", submitAnswer);
+    nextButton.addEventListener("click", nextQuestion);
+
+    document.querySelector("#back-button").addEventListener("click", () => {
+      quizScreen.hidden = true;
+      homeScreen.hidden = false;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    document.querySelector("#reset-button").addEventListener("click", () => {
+      if (state.level) startLevel(state.level);
+    });
+  </script>
+</body>
+</html>
